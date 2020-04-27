@@ -4,76 +4,67 @@
  * and open the template in the editor.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
-public class Temperature extends JFrame {
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-    public Temperature() {
-        setSize(300, 150);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-        setLayout(new GridLayout(4, 1));
-        JLabel label1 = new JLabel("Enter Celsius temperature ");
-        add(label1, BorderLayout.NORTH);
-        JTextField text = new JTextField();
-        text.setPreferredSize(new Dimension(200, 30));
-        add(text, BorderLayout.CENTER);
-        JPanel jPanel = new JPanel(new GridLayout(1, 2));
-
-        ButtonGroup bG = new ButtonGroup();
-        JRadioButton rB1 = new JRadioButton("Fahrenheit ");
-        JLabel label = new JLabel();
-        rB1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!text.getText().equals("")) {
-                    double num = Double.parseDouble(text.getText());
-                    double f = (num * 1.8) + 32;
-
-                    label.setText(String.valueOf(f));
-
-                }
-            }
-        });
-
-        JRadioButton rB2 = new JRadioButton("Kelvin");
-        rB2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!text.getText().equals("")) {
-                    double num = Double.parseDouble(text.getText());
-                    double k  = num  + 273.15;
-
-                    label.setText(String.valueOf(k));
-
-                }
-            }
-        });
-        bG.add(rB1);
-        bG.add(rB2);
-        jPanel.add(rB1);
-        jPanel.add(rB2);
-        add(jPanel);
-        add(label);
-        setVisible(true);
-
-    }
-
+/**
+ *
+ * @author MohammedHams
+ */
+public class Temperature extends Application{
     public static void main(String[] args) {
-        Temperature m = new Temperature();
+        launch(args);
     }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Label lbl1=new Label("Enter Celsuis temperature");
+        Label lbldgree=new Label();
+        TextField txttemp=new TextField();
+        RadioButton rdF=new RadioButton("Fahrenheit");
+        RadioButton rdK=new RadioButton("Kelvin");
+        ToggleGroup radiogroup=new ToggleGroup();
+        rdF.setToggleGroup(radiogroup);
+        rdK.setToggleGroup(radiogroup);
+        HBox hbox=new HBox(10,rdF,rdK);
+        hbox.setAlignment(Pos.CENTER);
+        VBox vbox=new VBox(10,lbl1,txttemp,hbox,lbldgree);
+        vbox.setAlignment(Pos.CENTER);
+           rdF.setSelected(true);
+        txttemp.setOnAction((ActionEvent event) -> {
+            double dgree;
+            if(!txttemp.getText().equals(""))
+            {
+                if(rdF.isSelected())
+                {
+                    dgree=Double.parseDouble(txttemp.getText())*9/5+32;
+                    lbldgree.setText("New Temp"+dgree);
+                    
+                }
+                else if(rdK.isSelected())
+                {
+                    dgree=Double.parseDouble(txttemp.getText())+273.15;
+                    lbldgree.setText("New Temp"+dgree);
+                }
+            }
+        });
+        
+        Scene s=new Scene(vbox,300,200);
+        primaryStage.setScene(s);
+        primaryStage.setTitle("Temperature Converter");
+        primaryStage.show();
+    }
+    
 }
